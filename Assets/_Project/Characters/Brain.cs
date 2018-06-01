@@ -6,21 +6,22 @@ public class Brain : MonoBehaviour {
 
     #region Properties
 
-    public float TimeSpentWalking
+    public float DistanceWalked
     {
-        get { return timeSpentWalking; }
-        private set { timeSpentWalking = value; }
+        get { return distanceWalked; }
+        private set { distanceWalked = value; }
     }
 
     public Dna Dna { get; private set; }
     #endregion
 
     [SerializeField] private GameObject eyes;
-    [SerializeField] private float timeSpentWalking;
+    [SerializeField] private float distanceWalked;
     [SerializeField] private float debugRaycastLifetime = 1f;
 
     private int DnaLength = 2;
     private bool canSeeGround = true;
+    private Vector3 startPosition;
 
     #region Public Methods
     public void Init ()
@@ -30,13 +31,14 @@ public class Brain : MonoBehaviour {
         // 1 = turn left.
         // 2 = turn right.
         Dna = new Dna(DnaLength, 3);
-        timeSpentWalking = 0f;
+        distanceWalked = 0f;
     }
     #endregion
 
     private void Start ()
     {
         GetComponent<MeshRenderer>().material.color = Color.red;
+        startPosition = this.transform.position;
     }
     // Update is called once per frame
     void Update ()
@@ -53,7 +55,7 @@ public class Brain : MonoBehaviour {
         RaycastHit hit;
         if (Physics.Raycast(eyes.transform.position, eyes.transform.forward * 10, out hit))
         {
-            if (hit.collider.gameObject.tag == "platform")
+            if (hit.collider.gameObject.tag == "Ground")
             {
                 canSeeGround = true;
             }
@@ -70,7 +72,6 @@ public class Brain : MonoBehaviour {
             if (Dna.Genes[0] == 0)
             {
                 move = 1;
-                timeSpentWalking += Time.deltaTime;
             }
             else if (Dna.Genes[0] == 1)
             {
@@ -86,7 +87,6 @@ public class Brain : MonoBehaviour {
             if (Dna.Genes[1] == 0)
             {
                 move = 1;
-                timeSpentWalking += Time.deltaTime;
             }
             else if (Dna.Genes[1] == 1)
             {
@@ -100,5 +100,7 @@ public class Brain : MonoBehaviour {
 
         this.transform.Translate(0, 0, move * 0.1f);
         this.transform.Rotate(0, turn, 0);
+
+        distanceWalked = Vector3.Distance(startPosition, this.transform.position);
     }
 }

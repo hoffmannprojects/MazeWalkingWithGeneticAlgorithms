@@ -47,8 +47,8 @@ public class PopulationManager : MonoBehaviour
     private void BreedNewPopulation ()
     {
         // Population sorted by fittest last.
-        // Fitness weighted by TimeSpentWalking * 5 and TimeAlive * 1.
-        List<GameObject> sortedPopulation = population.OrderBy(o => o.GetComponent<Brain>().TimeSpentWalking).ToList();
+        // Fitness indicated by DistanceWalked.
+        List<GameObject> sortedPopulation = population.OrderBy(o => o.GetComponent<Brain>().DistanceWalked).ToList();
         population.Clear();
 
         // Breed second half of list (fittest).
