@@ -5,11 +5,6 @@ using UnityEngine;
 public class Brain : MonoBehaviour {
 
     #region Properties
-    public float TimeAlive
-    {
-        get { return timeAlive; }
-        private set { timeAlive = value; }
-    }
 
     public float TimeSpentWalking
     {
@@ -20,17 +15,12 @@ public class Brain : MonoBehaviour {
     public Dna Dna { get; private set; }
     #endregion
 
-    [SerializeField] private GameObject ethanPrefab;
     [SerializeField] private GameObject eyes;
-    [SerializeField] private float timeAlive;
     [SerializeField] private float timeSpentWalking;
     [SerializeField] private float debugRaycastLifetime = 1f;
 
     private int DnaLength = 2;
-    private bool isAlive = true;
     private bool canSeeGround = true;
-    private MeshRenderer[] meshRenderers;
-    private GameObject ethan;
 
     #region Public Methods
     public void Init ()
@@ -40,27 +30,17 @@ public class Brain : MonoBehaviour {
         // 1 = turn left.
         // 2 = turn right.
         Dna = new Dna(DnaLength, 3);
-        TimeAlive = 0f;
         timeSpentWalking = 0f;
-        isAlive = true;
     }
     #endregion
 
     private void Start ()
     {
-        meshRenderers = GetComponentsInChildren<MeshRenderer>();
+        GetComponent<MeshRenderer>().material.color = Color.red;
     }
     // Update is called once per frame
     void Update ()
     {
-        if (!isAlive)
-        {
-            foreach (var meshRenderer in meshRenderers)
-            {
-                meshRenderer.material.color = Color.gray;
-            }
-            return;
-        }
         CheckIfCanSeeGround();
         MoveBasedOnDna();
     }
@@ -78,7 +58,6 @@ public class Brain : MonoBehaviour {
                 canSeeGround = true;
             }
         }
-        TimeAlive = PopulationManager.TimeElapsed;
     }
 
     private void MoveBasedOnDna ()
@@ -121,18 +100,5 @@ public class Brain : MonoBehaviour {
 
         this.transform.Translate(0, 0, move * 0.1f);
         this.transform.Rotate(0, turn, 0);
-    }
-
-    private void OnCollisionEnter (Collision collision)
-    {
-        if(collision.gameObject.tag == "dead")
-        {
-            isAlive = false;
-        }
-    }
-
-    private void OnDestroy ()
-    {
-        Destroy(ethan);
     }
 }
