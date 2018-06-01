@@ -200,9 +200,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   eyes: {fileID: 1754420745146026}
   distanceWalked: 0
-  raycastLength: 1
+  raycastLength: 3
   debugRaycastLifetime: 0.25
-  obstacleAhead: 0
+  canSeeFloor: 0
 --- !u!136 &136915154149861056
 CapsuleCollider:
   m_ObjectHideFlags: 1
