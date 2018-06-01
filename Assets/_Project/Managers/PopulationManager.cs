@@ -12,6 +12,7 @@ public class PopulationManager : MonoBehaviour
     [SerializeField] private GameObject botPrefab;
     [SerializeField] private int populationSize = 50;
     [SerializeField] private float trialTime = 5;
+    [SerializeField] private float spawnOffset = 1f;
 
     private List<GameObject> population = new List<GameObject>();
     private int generation = 1;
@@ -25,7 +26,7 @@ public class PopulationManager : MonoBehaviour
 
 		for(var i = 0; i < populationSize; i++)
         {
-            Vector3 startingPosition = new Vector3(this.transform.position.x, this.transform.position.y, this.transform.position.z);
+            Vector3 startingPosition = new Vector3(this.transform.position.x + Random.Range(-spawnOffset, spawnOffset), this.transform.position.y, this.transform.position.z + Random.Range(-spawnOffset, spawnOffset));
             GameObject bot = Instantiate(botPrefab, startingPosition, this.transform.rotation);
 
             bot.GetComponent<Brain>().Init();
@@ -68,7 +69,7 @@ public class PopulationManager : MonoBehaviour
 
     private GameObject Breed(GameObject parent1, GameObject parent2)
     {
-        var startingPosition = new Vector3(this.transform.position.x, this.transform.position.y, this.transform.position.z);
+        var startingPosition = new Vector3(this.transform.position.x + Random.Range(-spawnOffset, spawnOffset), this.transform.position.y, this.transform.position.z + Random.Range(-spawnOffset, spawnOffset));
 
         GameObject offspring = Instantiate(botPrefab, startingPosition, Quaternion.identity);
         Brain brain = offspring.GetComponent<Brain>();

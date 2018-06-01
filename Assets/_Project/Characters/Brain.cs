@@ -17,10 +17,11 @@ public class Brain : MonoBehaviour {
 
     [SerializeField] private GameObject eyes;
     [SerializeField] private float distanceWalked;
+    [SerializeField] private float raycastLength = 5f;
     [SerializeField] private float debugRaycastLifetime = 1f;
+    [SerializeField] private bool canSeeFloor = false;
 
     private int DnaLength = 2;
-    private bool canSeeGround = true;
     private Vector3 startPosition;
 
     #region Public Methods
@@ -43,22 +44,27 @@ public class Brain : MonoBehaviour {
     // Update is called once per frame
     void Update ()
     {
-        CheckIfCanSeeGround();
+        CheckForObstacle();
         MoveBasedOnDna();
     }
 
-    private void CheckIfCanSeeGround ()
+    private void CheckForObstacle ()
     {
-        Debug.DrawRay(eyes.transform.position, eyes.transform.forward * 10, Color.red, debugRaycastLifetime);
-        canSeeGround = false;
+        Debug.DrawRay(eyes.transform.position, eyes.transform.forward * raycastLength, Color.red, debugRaycastLifetime);
+        canSeeFloor = false;
 
         RaycastHit hit;
-        if (Physics.Raycast(eyes.transform.position, eyes.transform.forward * 10, out hit))
+        if (Physics.Raycast(eyes.transform.position, eyes.transform.forward * raycastLength, out hit))
         {
-            if (hit.collider.gameObject.tag == "Ground")
+            if (hit.collider.tag == "Floor")
             {
-                canSeeGround = true;
+                Debug.Log(hit.collider.gameObject);
+                canSeeFloor = true;
             }
+        }
+        else
+        {
+            Debug.Log("nothing ahead");
         }
     }
 
@@ -67,7 +73,7 @@ public class Brain : MonoBehaviour {
         float turn = 0;
         float move = 0;
 
-        if (canSeeGround)
+        if (canSeeFloor)
         {
             if (Dna.Genes[0] == 0)
             {
@@ -98,7 +104,8 @@ public class Brain : MonoBehaviour {
             }
         }
 
-        this.transform.Translate(0, 0, move * 0.1f);
+        Vector3 moveDirection = new Vector3(0, 0, move * 0.1f);
+        GetComponent<Rigidbody>().MovePosition(this.transform.position + moveDirection);
         this.transform.Rotate(0, turn, 0);
 
         distanceWalked = Vector3.Distance(startPosition, this.transform.position);
