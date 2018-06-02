@@ -19,10 +19,14 @@ public class Brain : MonoBehaviour {
     [SerializeField] private float distanceWalked;
     [SerializeField] private float raycastLength = 5f;
     [SerializeField] private float debugRaycastLifetime = 1f;
-    [SerializeField] private bool canSeeFloor = false;
+    [SerializeField] private bool obstacleAhead = false;
+    [SerializeField] private float moveSpeed = 10f;
+    [SerializeField] private int gene0;
+    [SerializeField] private int gene1;
 
     private int DnaLength = 2;
     private Vector3 startPosition;
+    private Rigidbody rb;
 
     #region Public Methods
     public void Init ()
@@ -40,31 +44,28 @@ public class Brain : MonoBehaviour {
     {
         GetComponent<MeshRenderer>().material.color = Color.red;
         startPosition = this.transform.position;
+        rb = GetComponent<Rigidbody>();
     }
     // Update is called once per frame
     void Update ()
     {
         CheckForObstacle();
+    }
+
+    private void FixedUpdate ()
+    {
         MoveBasedOnDna();
     }
 
     private void CheckForObstacle ()
     {
         Debug.DrawRay(eyes.transform.position, eyes.transform.forward * raycastLength, Color.red, debugRaycastLifetime);
-        canSeeFloor = false;
+        obstacleAhead = false;
 
         RaycastHit hit;
-        if (Physics.Raycast(eyes.transform.position, eyes.transform.forward * raycastLength, out hit))
+        if (Physics.Raycast(eyes.transform.position, eyes.transform.forward, out hit, raycastLength))
         {
-            if (hit.collider.tag == "Floor")
-            {
-                Debug.Log(hit.collider.gameObject);
-                canSeeFloor = true;
-            }
-        }
-        else
-        {
-            Debug.Log("nothing ahead");
+            obstacleAhead = true;
         }
     }
 
@@ -73,7 +74,7 @@ public class Brain : MonoBehaviour {
         float turn = 0;
         float move = 0;
 
-        if (canSeeFloor)
+        if (obstacleAhead)
         {
             if (Dna.Genes[0] == 0)
             {
@@ -103,9 +104,12 @@ public class Brain : MonoBehaviour {
                 turn = 90;
             }
         }
+        gene0 = Dna.Genes[0];
+        gene1 = Dna.Genes[1];
+        
+        Vector3 moveDirection = transform.forward * move * moveSpeed;
+        rb.MovePosition(this.transform.position + moveDirection * Time.deltaTime);
 
-        Vector3 moveDirection = new Vector3(0, 0, move * 0.1f);
-        GetComponent<Rigidbody>().MovePosition(this.transform.position + moveDirection);
         this.transform.Rotate(0, turn, 0);
 
         distanceWalked = Vector3.Distance(startPosition, this.transform.position);
