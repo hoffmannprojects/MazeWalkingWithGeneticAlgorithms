@@ -87,8 +87,7 @@ public class Brain : MonoBehaviour {
         gene0 = Dna.Genes[0];
         gene1 = Dna.Genes[1];
         
-        Vector3 moveDirection = transform.forward * move * moveSpeed;
-        rb.MovePosition(this.transform.position + moveDirection * Time.deltaTime);
+        rb.MovePosition(this.transform.position + transform.forward * move * moveSpeed * Time.deltaTime);
 
         this.transform.Rotate(0, turn, 0);
 

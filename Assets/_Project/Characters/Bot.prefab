@@ -200,10 +200,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   eyes: {fileID: 1754420745146026}
   distanceWalked: 0
-  raycastLength: 1
+  raycastMaxDistance: 1
   debugRaycastLifetime: 0.25
   obstacleAhead: 0
-  moveSpeed: 10
+  moveSpeed: 0.03
   gene0: 0
   gene1: 0
 --- !u!136 &136915154149861056
