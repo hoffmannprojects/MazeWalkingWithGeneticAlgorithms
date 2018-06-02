@@ -17,10 +17,10 @@ public class Brain : MonoBehaviour {
 
     [SerializeField] private GameObject eyes;
     [SerializeField] private float distanceWalked;
-    [SerializeField] private float raycastLength = 5f;
+    [SerializeField] private float raycastMaxDistance = 5f;
     [SerializeField] private float debugRaycastLifetime = 1f;
     [SerializeField] private bool obstacleAhead = false;
-    [SerializeField] private float moveSpeed = 10f;
+    [SerializeField] private float moveSpeed = 0.01f;
     [SerializeField] private int gene0;
     [SerializeField] private int gene1;
 
@@ -31,11 +31,10 @@ public class Brain : MonoBehaviour {
     #region Public Methods
     public void Init ()
     {
-        // Initialize Dna.
-        // 0 = move forward.
-        // 1 = turn left.
-        // 2 = turn right.
-        Dna = new Dna(DnaLength, 3);
+        // Initialize Dna. Both genes store values between 0 and 360.
+        // Gene 0 = move forward.
+        // Gene 1 = turn angle.
+        Dna = new Dna(DnaLength, 360);
         distanceWalked = 0f;
     }
     #endregion
@@ -59,11 +58,16 @@ public class Brain : MonoBehaviour {
 
     private void CheckForObstacle ()
     {
-        Debug.DrawRay(eyes.transform.position, eyes.transform.forward * raycastLength, Color.red, debugRaycastLifetime);
+
+        Vector3 origin = eyes.transform.position;
+        float radius = 0.1f;
+        Vector3 direction = eyes.transform.forward;
+        RaycastHit hit;
+
+        Debug.DrawRay(origin, direction * raycastMaxDistance, Color.red, debugRaycastLifetime);
         obstacleAhead = false;
 
-        RaycastHit hit;
-        if (Physics.Raycast(eyes.transform.position, eyes.transform.forward, out hit, raycastLength))
+        if (Physics.SphereCast(origin, radius, direction, out hit, raycastMaxDistance))
         {
             obstacleAhead = true;
         }
@@ -72,43 +76,18 @@ public class Brain : MonoBehaviour {
     private void MoveBasedOnDna ()
     {
         float turn = 0;
-        float move = 0;
+        float move = Dna.Genes[0];
 
         if (obstacleAhead)
         {
-            if (Dna.Genes[0] == 0)
-            {
-                move = 1;
-            }
-            else if (Dna.Genes[0] == 1)
-            {
-                turn = -90;
-            }
-            else if (Dna.Genes[0] == 2)
-            {
-                turn = 90;
-            }
+            turn = Dna.Genes[1];
         }
-        else
-        {
-            if (Dna.Genes[1] == 0)
-            {
-                move = 1;
-            }
-            else if (Dna.Genes[1] == 1)
-            {
-                turn = -90;
-            }
-            else if (Dna.Genes[1] == 2)
-            {
-                turn = 90;
-            }
-        }
+
+        // Only used for debugging in the inspector.
         gene0 = Dna.Genes[0];
         gene1 = Dna.Genes[1];
         
-        Vector3 moveDirection = transform.forward * move * moveSpeed;
-        rb.MovePosition(this.transform.position + moveDirection * Time.deltaTime);
+        rb.MovePosition(this.transform.position + transform.forward * move * moveSpeed * Time.deltaTime);
 
         this.transform.Rotate(0, turn, 0);
 

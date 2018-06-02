@@ -173,7 +173,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 80
   m_CollisionDetection: 0
 --- !u!65 &65857107451293510
 BoxCollider:
@@ -200,10 +200,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   eyes: {fileID: 1754420745146026}
   distanceWalked: 0
-  raycastLength: 1
+  raycastMaxDistance: 1
   debugRaycastLifetime: 0.25
   obstacleAhead: 0
-  moveSpeed: 10
+  moveSpeed: 0.03
   gene0: 0
   gene1: 0
 --- !u!136 &136915154149861056
