@@ -27,10 +27,14 @@ public class PopulationManager : MonoBehaviour
         dynamicObjects = GameObject.Find("_DynamicObjects");
         bots = new GameObject("Bots");
         bots.transform.parent = dynamicObjects.transform;
-        
         TimeElapsed = 0f;
 
-		for(var i = 0; i < populationSize; i++)
+        GenerateFirstGeneration();
+    }
+
+    private void GenerateFirstGeneration ()
+    {
+        for (var i = 0; i < populationSize; i++)
         {
             Vector3 startingPosition = new Vector3(this.transform.position.x + Random.Range(-spawnOffset, spawnOffset), this.transform.position.y, this.transform.position.z + Random.Range(-spawnOffset, spawnOffset));
             GameObject bot = Instantiate(botPrefab, startingPosition, this.transform.rotation, bots.transform);
@@ -38,10 +42,10 @@ public class PopulationManager : MonoBehaviour
             bot.GetComponent<Brain>().Init();
             population.Add(bot);
         }
-	}
-	
-	// Update is called once per frame
-	void Update ()
+    }
+
+    // Update is called once per frame
+    void Update ()
     {
         TimeElapsed += Time.deltaTime;
         if(TimeElapsed >= trialTime)
@@ -95,6 +99,7 @@ public class PopulationManager : MonoBehaviour
         return offspring;
     }
 
+    // Shows informational stats.
     private void OnGUI ()
     {
         guiStyle.fontSize = 25;
