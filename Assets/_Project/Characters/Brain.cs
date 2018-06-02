@@ -20,7 +20,7 @@ public class Brain : MonoBehaviour {
     [SerializeField] private float raycastMaxDistance = 5f;
     [SerializeField] private float debugRaycastLifetime = 1f;
     [SerializeField] private bool obstacleAhead = false;
-    [SerializeField] private float moveSpeed = 10f;
+    [SerializeField] private float moveSpeed = 0.01f;
     [SerializeField] private int gene0;
     [SerializeField] private int gene1;
 
@@ -31,7 +31,7 @@ public class Brain : MonoBehaviour {
     #region Public Methods
     public void Init ()
     {
-        // Initialize Dna.
+        // Initialize Dna. Both genes store values between 0 and 360.
         // Gene 0 = move forward.
         // Gene 1 = turn angle.
         Dna = new Dna(DnaLength, 360);
@@ -76,38 +76,14 @@ public class Brain : MonoBehaviour {
     private void MoveBasedOnDna ()
     {
         float turn = 0;
-        float move = 0;
+        float move = Dna.Genes[0];
 
         if (obstacleAhead)
         {
-            if (Dna.Genes[0] == 0)
-            {
-                move = 1;
-            }
-            else if (Dna.Genes[0] == 1)
-            {
-                turn = -90;
-            }
-            else if (Dna.Genes[0] == 2)
-            {
-                turn = 90;
-            }
+            turn = Dna.Genes[1];
         }
-        else
-        {
-            if (Dna.Genes[1] == 0)
-            {
-                move = 1;
-            }
-            else if (Dna.Genes[1] == 1)
-            {
-                turn = -90;
-            }
-            else if (Dna.Genes[1] == 2)
-            {
-                turn = 90;
-            }
-        }
+
+        // Only used for debugging in the inspector.
         gene0 = Dna.Genes[0];
         gene1 = Dna.Genes[1];
         
