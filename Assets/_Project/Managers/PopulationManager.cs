@@ -16,18 +16,24 @@ public class PopulationManager : MonoBehaviour
 
     private List<GameObject> population = new List<GameObject>();
     private int generation = 1;
+    private GameObject dynamicObjects;
+    private GameObject bots;
 
     private GUIStyle guiStyle = new GUIStyle();
 
 	// Use this for initialization
 	void Start ()
     {
+        dynamicObjects = GameObject.Find("_DynamicObjects");
+        bots = new GameObject("Bots");
+        bots.transform.parent = dynamicObjects.transform;
+        
         TimeElapsed = 0f;
 
 		for(var i = 0; i < populationSize; i++)
         {
             Vector3 startingPosition = new Vector3(this.transform.position.x + Random.Range(-spawnOffset, spawnOffset), this.transform.position.y, this.transform.position.z + Random.Range(-spawnOffset, spawnOffset));
-            GameObject bot = Instantiate(botPrefab, startingPosition, this.transform.rotation);
+            GameObject bot = Instantiate(botPrefab, startingPosition, this.transform.rotation, bots.transform);
 
             bot.GetComponent<Brain>().Init();
             population.Add(bot);
@@ -71,7 +77,7 @@ public class PopulationManager : MonoBehaviour
     {
         var startingPosition = new Vector3(this.transform.position.x + Random.Range(-spawnOffset, spawnOffset), this.transform.position.y, this.transform.position.z + Random.Range(-spawnOffset, spawnOffset));
 
-        GameObject offspring = Instantiate(botPrefab, startingPosition, Quaternion.identity);
+        GameObject offspring = Instantiate(botPrefab, startingPosition, Quaternion.identity, bots.transform);
         Brain brain = offspring.GetComponent<Brain>();
 
         if(Random.Range(0, 100) == 1)
