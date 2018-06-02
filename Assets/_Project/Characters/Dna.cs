@@ -34,12 +34,7 @@ public class Dna {
             genes.Add(Random.Range(0, maxValues));
         }
     }
-
-    public void SetInt (int position, int value)
-    {
-        genes[position] = value;
-    }
-
+    
     public void Combine (Dna parent1, Dna parent2)
     {
         for(var i = 0; i < dnaLength; i++)
