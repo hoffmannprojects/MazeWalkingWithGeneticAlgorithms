@@ -484,7 +484,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   botPrefab: {fileID: 1996945338229366, guid: 55f9132f0a2a81f4cb9f14b15655192a, type: 2}
   populationSize: 50
-  trialTime: 10
+  trialTime: 7
   spawnOffset: 1
 --- !u!1 &2112824882
 GameObject:
