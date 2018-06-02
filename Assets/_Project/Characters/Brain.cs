@@ -17,7 +17,7 @@ public class Brain : MonoBehaviour {
 
     [SerializeField] private GameObject eyes;
     [SerializeField] private float distanceWalked;
-    [SerializeField] private float raycastLength = 5f;
+    [SerializeField] private float raycastMaxDistance = 5f;
     [SerializeField] private float debugRaycastLifetime = 1f;
     [SerializeField] private bool obstacleAhead = false;
     [SerializeField] private float moveSpeed = 10f;
@@ -32,10 +32,9 @@ public class Brain : MonoBehaviour {
     public void Init ()
     {
         // Initialize Dna.
-        // 0 = move forward.
-        // 1 = turn left.
-        // 2 = turn right.
-        Dna = new Dna(DnaLength, 3);
+        // Gene 0 = move forward.
+        // Gene 1 = turn angle.
+        Dna = new Dna(DnaLength, 360);
         distanceWalked = 0f;
     }
     #endregion
@@ -59,11 +58,16 @@ public class Brain : MonoBehaviour {
 
     private void CheckForObstacle ()
     {
-        Debug.DrawRay(eyes.transform.position, eyes.transform.forward * raycastLength, Color.red, debugRaycastLifetime);
+
+        Vector3 origin = eyes.transform.position;
+        float radius = 0.1f;
+        Vector3 direction = eyes.transform.forward;
+        RaycastHit hit;
+
+        Debug.DrawRay(origin, direction * raycastMaxDistance, Color.red, debugRaycastLifetime);
         obstacleAhead = false;
 
-        RaycastHit hit;
-        if (Physics.Raycast(eyes.transform.position, eyes.transform.forward, out hit, raycastLength))
+        if (Physics.SphereCast(origin, radius, direction, out hit, raycastMaxDistance))
         {
             obstacleAhead = true;
         }
